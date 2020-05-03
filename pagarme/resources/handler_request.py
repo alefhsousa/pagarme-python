@@ -1,4 +1,6 @@
 import requests
+from requests.adapters import HTTPAdapter
+
 from pagarme import sdk
 
 TEMPORARY_COMPANY = 'https://api.pagar.me/1/companies/temporary'
@@ -8,7 +10,8 @@ KEYS = {}
 
 def headers():
     _headers = {
-        'User-Agent': 'pagarme-python/{}'.format(sdk.VERSION),
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)'
+                      ' Chrome/56.0.2924.87 Safari/537.36',
         'X-PagarMe-User-Agent': 'pagarme-python/{}'.format(sdk.VERSION)
     }
     return _headers
@@ -16,6 +19,8 @@ def headers():
 
 session = requests.Session()
 session.headers.update(headers())
+session.mount('http', HTTPAdapter(max_retries=3))
+session.mount('https', HTTPAdapter(max_retries=3))
 
 
 def validate_response(pagarme_response):
